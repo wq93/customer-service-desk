@@ -1,0 +1,36 @@
+.service-desk-wrapper .save-scheduling-state {
+  display: none;
+}
+.service-desk-wrapper .scheduling-select {
+  display: none;
+}
+.service-desk-wrapper .scheduling-state-btn {
+  display: block;
+  width: 50px;
+}
+.service-desk-header .btn-search{
+  float: right;
+  margin-right: 12px;
+}
+.service-desk-header .btn-reset{
+  float: right;
+}
+.select-month {
+  height: 34px;
+  margin-left: 12px;
+  border-color: #ccc;
+  vertical-align: middle;
+  color: #999;
+}
+.service-desk-wrapper {
+  padding: 20px;
+}
+.service-desk-table {
+  width: 100%;
+  overflow-x: auto;
+}
+.service-desk-table table {
+  margin-top: 20px;
+  margin-bottom: 0;
+  text-align: center;
+}

@@ -1,6 +1,6 @@
 (function() {
   // 初始化支持多选的下拉框
-  $('.selectpicker').selectpicker({});
+  $('.selectpicker').selectpicker({width: 120});
 
   $('.selectpicker').change(function(){
     // 获取多选值
@@ -13,6 +13,47 @@
     renderThead();
     renderTbody();
   });
+
+  // 点击单行编辑事件
+  $('.service-desk-table').on('click', '.edit-scheduling-state', function (event) {
+    var $target = $(event.currentTarget);
+    var $parent = $target.parents('tr');
+
+    $target.hide();
+    $parent.find('.save-scheduling-state').show();
+    $parent.find('.scheduling-span').hide();
+    $parent.find('.scheduling-select').show();
+  })
+
+  // 点击单行保存事件
+  $('.service-desk-table').on('click', '.save-scheduling-state', function (event) {
+    var $target = $(event.currentTarget);
+    var $parent = $target.parents('tr');
+
+    // 发送请求 ...
+    renderThead();
+    renderTbody();
+  })
+
+  // 点击搜索按钮
+  $('.btn-search').click(function () {
+    var serviceDeskList = $('.selectpicker').val();
+    var selectMonth = $('.select-month').val();
+    // 发送请求
+    console.log(serviceDeskList, selectMonth);
+  })
+
+  // 点击重置按钮
+  $('.btn-reset').click(function () {
+    $('.selectpicker').val('');
+    $('.select-month').val('');
+    $('.selectpicker').selectpicker('refresh');
+
+    // 清空数据
+    $('.service-desk-table table thead').html('');
+    $('.service-desk-table table tbody').html('');
+  })
+
 
   // 全局变量
   var dataArr = [];
@@ -89,9 +130,15 @@
     var customerServiceList = ['liangxiaoyan', 'xuzhiyan', 'weiliban'];
     // 循环生成tr
     var tbodyStr = $.map(customerServiceList, function (customerService) {
-      var trStr = `<td>编辑</td><td>${customerService}</td>`;
+      var trStr = `<td class='scheduling-state-btn'><span class='edit-scheduling-state'>编辑</span><span class='save-scheduling-state'>保存</span></td><td>${customerService}</td>`;
       trStr += $.map(daysMap, function (days) {
-        return `<td>${days.schedulingState === 'free' ? '×' : '○'}</td>`
+        return `<td>
+                  <span class='scheduling-span'>${days.schedulingState === 'free' ? '×' : '○'}</span>
+                  <select class='scheduling-select'>
+                    <option value="free" ${days.schedulingState === 'free' ? 'selected' : ''}>×</option>
+                    <option value="work" ${days.schedulingState === 'work' ? 'selected' : ''}>○</option>
+                  </select>
+                </td>`
       }).join('');
        return `<tr>${trStr}</tr>`;
     }).join('');
