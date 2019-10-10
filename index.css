@@ -34,3 +34,15 @@
   margin-bottom: 0;
   text-align: center;
 }
+
+.edit-scheduling-state,
+.save-scheduling-state {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.edit-scheduling-state:hover,
+.save-scheduling-state:hover {
+  color: #169BD5;
+}
+
