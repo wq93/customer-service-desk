@@ -29,7 +29,16 @@
   $('.service-desk-table').on('click', '.save-scheduling-state', function (event) {
     var $target = $(event.currentTarget);
     var $parent = $target.parents('tr');
-
+    var selectMap = [];
+    // 获取本行的select值
+    $.map($parent.find('.scheduling-select'), function(item) {
+      item = $(item);
+      selectMap.push({
+        'datetime': item.attr('data-datetime'),
+        'schedulingState': $(item).val()
+      });
+    });
+    console.log(selectMap);
     // 发送请求 ...
     renderThead();
     renderTbody();
@@ -61,8 +70,13 @@
 
   // 获取当前月份的前后6个月
   var getMonthList = function () {
-    // 插入当前月份后6个月
     var data = new Date();
+    var currentYear = data.getFullYear();
+    var currentMonth = data.getMonth() + 1;
+    currentMonth = currentMonth < 10 ? "0" + currentMonth : currentMonth;
+    dataArr = [currentYear + "-" + currentMonth];
+
+    // 插入当前月份后6个月
     data.setMonth(data.getMonth(), 1)//获取到当前月份,设置月份
     for (var i = 0; i < 6; i++) {
       data.setMonth(data.getMonth() + 1);//每次循环一次 月份值减1
@@ -73,10 +87,11 @@
 
     // 插入当前月份前6个月
     data = new Date();
-    data.setMonth(data.getMonth() + 3, 1)//获取到当前月份,设置月份
-    for (var i = 0; i < 6; i++) {
+
+    data.setMonth(data.getMonth(), 1)//获取到当前月份,设置月份
+    for (var i = 0; i < 5; i++) {
       data.setMonth(data.getMonth() - 1);//每次循环一次 月份值减1
-      var m = data.getMonth() - 1;
+      var m = data.getMonth() + 1;
       m = m < 10 ? "0" + m : m;
       dataArr.unshift(data.getFullYear() + "-" + (m))
     }
@@ -116,7 +131,7 @@
     }
   }
 
-  // 渲染表头c
+  // 渲染表头
   var renderThead = function() {
     var thStr = `<th>操作</th><th>客服</th>`
     thStr += $.map(daysMap, function (item) {
@@ -132,11 +147,12 @@
     var tbodyStr = $.map(customerServiceList, function (customerService) {
       var trStr = `<td class='scheduling-state-btn'><span class='edit-scheduling-state'>编辑</span><span class='save-scheduling-state'>保存</span></td><td>${customerService}</td>`;
       trStr += $.map(daysMap, function (days) {
-        return `<td>
-                  <span class='scheduling-span'>${days.schedulingState === 'free' ? '×' : '○'}</span>
-                  <select class='scheduling-select'>
-                    <option value="free" ${days.schedulingState === 'free' ? 'selected' : ''}>×</option>
-                    <option value="work" ${days.schedulingState === 'work' ? 'selected' : ''}>○</option>
+        var isFree = days.schedulingState === 'free';
+        return `<td class='${isFree ? 'free-td' : 'work-td'}'>
+                  <span class='scheduling-span'>${isFree ? '×' : '○'}</span>
+                  <select class='scheduling-select' data-datetime='${days.datetime}'>
+                    <option value="free" ${isFree ? 'selected' : ''}>×</option>
+                    <option value="work" ${isFree ? '' : 'selected'}>○</option>
                   </select>
                 </td>`
       }).join('');
